@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: team-a-app-v1
+  namespace: team-a
+spec:
+  selector:
+    app: team-a-app
+    version: v1
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: team-a-app-v2
+  namespace: team-a
+spec:
+  selector:
+    app: team-a-app
+    version: v2
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: team-a-app-v1
+  namespace: team-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: team-a-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: team-a-app
+        version: v1
+    spec:
+      containers:
+      - name: app
+        image: gateway-api-demo-server:latest
+        imagePullPolicy: Never
+        env:
+        - name: APP_NAME
+          value: "team-a-app-v1"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: team-a-app-v2
+  namespace: team-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: team-a-app
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: team-a-app
+        version: v2
+    spec:
+      containers:
+      - name: app
+        image: gateway-api-demo-server:latest
+        imagePullPolicy: Never
+        env:
+        - name: APP_NAME
+          value: "team-a-app-v2"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: team-b-app-v1
+  namespace: team-b
+spec:
+  selector:
+    app: team-b-app
+    version: v1
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: team-b-app-v2
+  namespace: team-b
+spec:
+  selector:
+    app: team-b-app
+    version: v2
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: team-b-app-v1
+  namespace: team-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: team-b-app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: team-b-app
+        version: v1
+    spec:
+      containers:
+      - name: app
+        image: gateway-api-demo-server:latest
+        imagePullPolicy: Never
+        env:
+        - name: APP_NAME
+          value: "team-b-app-v1"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: team-b-app-v2
+  namespace: team-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: team-b-app
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: team-b-app
+        version: v2
+    spec:
+      containers:
+      - name: app
+        image: gateway-api-demo-server:latest
+        imagePullPolicy: Never
+        env:
+        - name: APP_NAME
+          value: "team-b-app-v2"
+        ports:
+        - containerPort: 8080

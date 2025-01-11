@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shared-infra
+  labels:
+    kuma.io/sidecar-injection: enabled
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-c-infra
+  labels:
+    kuma.io/sidecar-injection: enabled
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-a
+  labels:
+    kuma.io/sidecar-injection: enabled
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-b
+  labels:
+    kuma.io/sidecar-injection: enabled
+---
+apiVersion: kuma.io/v1alpha1
+kind: Mesh
+metadata:
+  name: default
+spec:
+  dnns:
+    enabled: true
+  meshServices:
+    mode: Exclusive
+  mtls:
+    enabledBackend: ca-1
+    backends:
+    - name: ca-1
+      type: builtin
+---
+apiVersion: kuma.io/v1alpha1
+kind: MeshTrafficPermission
+metadata:
+  name: allow-shared-gw-to-team-a-app
+  namespace: kuma-system
+  labels:
+    kuma.io/mesh: default
+spec:
+  targetRef:
+    kind: MeshSubset
+    tags:
+      app: team-a-app
+  from:
+  - targetRef:
+      kind: MeshSubset
+      tags:
+        kuma.io/service: shared-gw_shared-infra_svc
+    default:
+      action: Allow
+---
+apiVersion: kuma.io/v1alpha1
+kind: MeshTrafficPermission
+metadata:
+  name: allow-shared-gw-to-team-b-app
+  namespace: kuma-system
+  labels:
+    kuma.io/mesh: default
+spec:
+  targetRef:
+    kind: MeshSubset
+    tags:
+      app: team-b-app
+  from:
+  - targetRef:
+      kind: MeshSubset
+      tags:
+        kuma.io/service: shared-gw_shared-infra_svc
+    default:
+      action: Allow

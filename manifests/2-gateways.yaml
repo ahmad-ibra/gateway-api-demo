@@ -1,0 +1,29 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: shared-gw
+  namespace: shared-infra
+spec:
+  gatewayClassName: kuma
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces: 
+        from: All
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: dedicated-team-c-gw
+  namespace: team-c-infra
+spec:
+  gatewayClassName: kuma
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces: 
+        from: Same
